@@ -10,13 +10,13 @@ export class AddressUSDTTRC20 {
   @Prop({ type: Types.ObjectId, ref: User.name, required: true })
   userId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: Transaction.name, required: true,unique: true ,index: true })
+  @Prop({ type: String, required: true,index: true })
     transactionId: Types.ObjectId;
   
-    @Prop({ unique: true, index: true })
+    @Prop({  index: true })
     custTransactionReference: string; 
   
-    @Prop({ unique: true, index: true })
+    @Prop({  index: true })
     transactionReference: string;
 
   @Prop({ required: true, unique: true })

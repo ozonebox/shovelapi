@@ -3,20 +3,21 @@ import { Document, Types } from 'mongoose';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
 import { User } from 'src/users/entities/user.entity';
 
-export type AddressSolDocument = AddressSol & Document;
+export type AddressXrpDocument = AddressXrp & Document;
 
 @Schema({ timestamps: true })
-export class AddressSol {
-  @Prop({ type: Types.ObjectId, ref: User.name, required: true })
+export class AddressXrp{
+  @Prop({ type: Types.ObjectId, ref: User.name, required: true,index: true  })
   userId: Types.ObjectId;
-  @Prop({ type: String,required: true,index: true })
-    transactionId: Types.ObjectId;
+
+  @Prop({ type: String, required: true,index: true })
+  transactionId: Types.ObjectId;
+
+  @Prop({  index: true })
+  custTransactionReference: string; 
   
-    @Prop({ index: true })
-    custTransactionReference: string; 
-  
-    @Prop({  index: true })
-    transactionReference: string;
+  @Prop({  index: true })
+  transactionReference: string;
 
   @Prop({ required: true, unique: true })
   address: string;
@@ -27,7 +28,7 @@ export class AddressSol {
   @Prop({ required: true })
   path: string;
 
-  @Prop({ required: true, enum: ['SOL'] })
+  @Prop({ required: true, enum: ['XRP'] })
   network: string;
 
   @Prop({ default: false })
@@ -37,4 +38,4 @@ export class AddressSol {
   type: string;
 }
 
-export const AddressSolSchema = SchemaFactory.createForClass(AddressSol);
+export const AddressXrpSchema = SchemaFactory.createForClass(AddressXrp);

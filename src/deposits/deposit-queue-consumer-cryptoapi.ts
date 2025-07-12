@@ -10,8 +10,8 @@ import { Queue, QueueDocument } from './entities/queue.entity';
 import { TransactionsGateway } from 'src/transactions/transactions.gateway';
 
 @Injectable()
-export class DepositQueueConsumer {
-  private readonly logger = new Logger(DepositQueueConsumer.name);
+export class DepositQueueConsumerCryptoApi {
+  private readonly logger = new Logger(DepositQueueConsumerCryptoApi.name);
 
   constructor(
     @InjectModel(Deposit.name)
@@ -22,7 +22,7 @@ export class DepositQueueConsumer {
     private readonly transactionsGateway: TransactionsGateway
   ) {}
 
-  @SqsMessageHandler('shovel-deposit-confirm', false)
+  @SqsMessageHandler('shovel-main-deposit-confirm', false)
   async handleMessage(message: { Body: string }): Promise<void> {
     
     try {
@@ -35,7 +35,6 @@ export class DepositQueueConsumer {
        const newQueue = await this.queueModel.create({
           fromQueue: payload,
         });
-         await newQueue.save();
       const depositAddress = payload.depositAddress[0].address;
       console.log("depositAddress>>>",depositAddress)
       newQueue.custTransactionReference=payload?.custTransactionReference;

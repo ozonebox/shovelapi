@@ -33,7 +33,7 @@ export class Deposit {
   @Prop({ required: true })
   depositAmount: number;
 
-  @Prop({ required: true, enum: ['BTC', 'ETH', 'LTC', 'USDTERC20', 'USDTTRC20', 'SOL', 'BCH'], index: true })
+  @Prop({ required: true, enum: ['BTC', 'ETH', 'LTC', 'USDTERC20', 'USDTTRC20', 'SOL', 'BCH', 'XRP'], index: true })
   depositType: string;
 
   @Prop({ default: 'pending', enum: ['pending', 'confirmed', 'failed'], index: true })

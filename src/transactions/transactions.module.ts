@@ -12,14 +12,18 @@ import { QrCodeService } from './qrcode.service';
 import { TransactionsGateway } from './transactions.gateway';
 import { EncryptionService } from './encrypt.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { TransactionAuth, TransactionAuthSchema } from './entities/transactionauth.entities';
+import { CryptoRateUtil } from 'src/common/utils/crypto-rate.util';
+import { HttpRequestUtil } from 'src/common/utils/http-request.util';
 
 @Module({
   imports: [
-      MongooseModule.forFeature([{ name: User.name, schema: UserSchema },{ name: Deposit.name, schema: DepositSchema},{ name: Transaction.name, schema: TransactionSchema}]),
+      MongooseModule.forFeature([{ name: User.name, schema: UserSchema },{ name: Deposit.name, schema: DepositSchema},{ name: Transaction.name, schema: TransactionSchema},
+        { name: TransactionAuth.name, schema: TransactionAuthSchema}]),
       DepositsModule,SecretsModule,SQSModule,AuthModule,
     ],
   controllers: [TransactionsController],
-  providers: [TransactionService,QrCodeService,TransactionsGateway,EncryptionService],
+  providers: [TransactionService,QrCodeService,TransactionsGateway,HttpRequestUtil,CryptoRateUtil,EncryptionService],
   exports: [TransactionService,QrCodeService,TransactionsGateway,EncryptionService],
 })
 export class TransactionsModule {}

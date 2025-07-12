@@ -40,11 +40,14 @@ export class DepositConfirmService {
   txIndex:number;
   txDate:string;
   transactionIndex:string;
+  addressId:string;
+  addressIndex:string;
 }) {
   const {
     method,
     hash,
     depositAddress,
+    addressId,addressIndex,
     ccyAmount,
     amountUsd,
     ccyValue,
@@ -62,7 +65,10 @@ export class DepositConfirmService {
     });
   }
 
-  const exisitngTransaction = await this.transactionModel.findOne({ depositAddress,depositType:method});
+  const exisitngTransaction = await this.transactionModel.findOne({
+    'depositAddress.address': depositAddress,
+    'depositAddress.depositType': method
+  });
   if(!exisitngTransaction){
       return sendResponseJson({
       responsecode: '23',
@@ -87,11 +93,9 @@ export class DepositConfirmService {
       existing.confirmedAt = new Date();
       existing.transDate=txDate;
       await existing.save();
-      exisitngTransaction.ccyAmount = exisitngTransaction.ccyAmount? exisitngTransaction.ccyAmount+ccyAmount:ccyAmount
       exisitngTransaction.amountUsd = exisitngTransaction.amountUsd?exisitngTransaction.amountUsd + amountUsd:amountUsd;
-      exisitngTransaction.ccyValue = ccyValue;
-      exisitngTransaction.status =  exisitngTransaction.ccyAmount >= exisitngTransaction.depositAmount ? 'confirmed' : 'pending';
-      exisitngTransaction.statusDesc = exisitngTransaction.ccyAmount >= exisitngTransaction.depositAmount ? 'Transaction fully Confirmed' : 'Transaction Partially Received';
+      exisitngTransaction.status =  exisitngTransaction.amountUsd >= exisitngTransaction.depositAmountUsd ? 'confirmed' : 'pending';
+      exisitngTransaction.statusDesc = exisitngTransaction.amountUsd >= exisitngTransaction.depositAmountUsd ? 'Transaction fully Confirmed' : 'Transaction Partially Received';
       exisitngTransaction.confirmedAt = new Date();
       exisitngTransaction.transDate=txDate;
       await exisitngTransaction.save();
@@ -130,13 +134,12 @@ export class DepositConfirmService {
       console.log('should behere',pending)
       const newDeposit = new this.depositModel({
         userId: exisitngTransaction.userId,
-        addressId: exisitngTransaction.addressId,
         depositAddress,
-        addressIndex: exisitngTransaction.addressIndex,
-        depositAmount: ccyAmount,
-        depositType: exisitngTransaction.depositType,
+        depositAmount: exisitngTransaction.depositAmount,
+        depositType: method,
         network: method,
         hash,
+        addressId,addressIndex,
         txIndex,
         txHash: hash,
         confirmations,
@@ -153,11 +156,9 @@ export class DepositConfirmService {
         statusDesc: confirmations > 0 ? 'Deposit Confirmed' : 'Deposit Received',
         msg: 'Auto Deposit',
       });
-      exisitngTransaction.ccyAmount = exisitngTransaction.ccyAmount?exisitngTransaction.ccyAmount +ccyAmount:ccyAmount;
       exisitngTransaction.amountUsd = exisitngTransaction.amountUsd? exisitngTransaction.amountUsd + amountUsd:amountUsd;
-      exisitngTransaction.ccyValue = ccyValue;
-      exisitngTransaction.status =  exisitngTransaction.ccyAmount >= exisitngTransaction.depositAmount ? 'confirmed' : 'pending';
-      exisitngTransaction.statusDesc = exisitngTransaction.ccyAmount >= exisitngTransaction.depositAmount ? 'Transaction fully Confirmed' : 'Transaction Partially Received';
+      exisitngTransaction.status =  exisitngTransaction.amountUsd >= exisitngTransaction.depositAmountUsd ? 'confirmed' : 'pending';
+      exisitngTransaction.statusDesc = exisitngTransaction.amountUsd >= exisitngTransaction.depositAmountUsd ? 'Transaction fully Confirmed' : 'Transaction Partially Received';
       exisitngTransaction.transDate=txDate;
       if (confirmations > 0) {
         newDeposit.confirmedAt = new Date();
@@ -214,11 +215,9 @@ export class DepositConfirmService {
       await pending.save();
 
     }
-      exisitngTransaction.ccyAmount = exisitngTransaction.ccyAmount? exisitngTransaction?.ccyAmount+ccyAmount:ccyAmount;
       exisitngTransaction.amountUsd = exisitngTransaction.amountUsd? exisitngTransaction?.amountUsd+ amountUsd:amountUsd;
-      exisitngTransaction.ccyValue = ccyValue;
-      exisitngTransaction.status =  exisitngTransaction.ccyAmount >= exisitngTransaction.depositAmount ? 'confirmed' : 'pending';
-      exisitngTransaction.statusDesc = exisitngTransaction.ccyAmount >= exisitngTransaction.depositAmount ? 'Transaction fully Confirmed' : 'Transaction Partially Received';
+      exisitngTransaction.status =  exisitngTransaction.amountUsd >= exisitngTransaction.depositAmountUsd ? 'confirmed' : 'pending';
+      exisitngTransaction.statusDesc = exisitngTransaction.amountUsd >= exisitngTransaction.depositAmountUsd ? 'Transaction fully Confirmed' : 'Transaction Partially Received';
       exisitngTransaction.transDate=txDate;
 
       if (confirmations > 0) {

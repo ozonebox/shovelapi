@@ -45,10 +45,42 @@ export class User {
   @Prop({ default: 0 }) balanceUSDTTRC20: number;
   @Prop({ unique: true })
   userMnem: string;
+    @Prop({
+    type: [
+      {
+        address: { type: String,  },
+        index: { type: Number, },
+        addressId: { type: String , },
+        currency: { type: String , },
+        depositType: { type: String, },
+        depositAmount: { type: Number,},
+        rate: { type: Number,  },
+        depositAmountUsd: { type: Number,  },
+        depositAddressQr: { type: String, },
+        addressIndex: { type: Number, },
+        createdAt: { type: Date, },
+      }
+    ],
+    default: [],
+  })
+  depositAddress: Array<{
+    address: string;
+    index: number;
+    addressId: string;
+    currency: string;
+    depositType: string;
+    depositAmount: number;
+    rate: number;
+    depositAmountUsd: number;
+    depositAddressQr: string;
+    addressIndex: number;
+    createdAt: Date;
+  }>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
+UserSchema.index({ 'depositAddress.address': 1 });
+UserSchema.index({ 'depositAddress.depositType': 1 });
 
 UserSchema.pre('save', function (next) {
   if (this.emailAddress) {

@@ -8,6 +8,7 @@ export enum DepositType {
   USDT_TRC = 'USDTTRC20',
   SOL = 'SOL',
   BCH = 'BCH',
+  XRP = 'XRP',
 }
 export class CreateDepositDto {
 

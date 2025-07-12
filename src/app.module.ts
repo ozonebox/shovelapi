@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { DepositsModule } from './deposits/deposits.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { LegalModule } from './legal/legal.module';
+import { DataModule } from './data/data.module';
 
 
 @Module({
@@ -18,7 +19,7 @@ import { LegalModule } from './legal/legal.module';
 
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     ConfigModule.forRoot({ isGlobal: true }),
-    WalletsModule,SecretsModule, UsersModule, AuthModule, DepositsModule, TransactionsModule, LegalModule,
+    WalletsModule,SecretsModule, UsersModule, AuthModule, DepositsModule, TransactionsModule, LegalModule, DataModule,
   ],
   controllers: [AppController],
   providers: [AppService],

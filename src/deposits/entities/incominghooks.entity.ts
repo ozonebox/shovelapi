@@ -3,11 +3,11 @@ import { Document, Types } from 'mongoose';
 import { User } from 'src/users/entities/user.entity';
 import { Address } from 'src/wallets/entities/address.entity';
 
-export type QueueDocument = Queue & Document;
+export type IncomingHooksDocument = IncomingHooks & Document;
 
 @Schema({ timestamps: true })
-export class Queue {
-  @Prop({ index: true })
+export class IncomingHooks {
+    @Prop({ index: true })
   custTransactionReference: string; 
 
   @Prop({ index: true })
@@ -22,11 +22,23 @@ export class Queue {
   @Prop({  })
   addressIndex: number;
 
+  @Prop({ index: true })
+  referenceId: string; 
+
+  @Prop({  })
+  currentConfirmations: number;
+
+  @Prop({})
+  targetConfirmations: number;
+
   @Prop({})
   depositAmount: number;
 
   @Prop({index: true })
   depositType: string;
+
+  @Prop()
+  direction: string;
 
   @Prop({ index: true })
   depositAddress: string;
@@ -36,12 +48,12 @@ export class Queue {
   fromQueue: Record<string, any>; // or `any` if you prefer
 
   @Prop({ type: Object }) // same here
-  procResult: Record<string, any>; // or `any`
+  procResult:string; // or `any`
 
 
 }
 
-export const QueueSchema = SchemaFactory.createForClass(Queue);
+export const IncomingHooksSchema = SchemaFactory.createForClass(IncomingHooks);
 
 // Compound index for depositAddress + hash for efficient lookups
 //DepositSchema.index({ depositAddress: 1, hash: 1 }, { unique: true, sparse: true });

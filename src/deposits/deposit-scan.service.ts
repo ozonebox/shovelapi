@@ -99,7 +99,7 @@ export class DepositScanService {
   //   };
   // }
 
-  async scanEthAddress(address: string) {
+  async scanEthAddress(address: string,addressId: string,addressIndex: string) {
   const lowerAddr = address;
   const url = `${this.ETHERSCAN_BASE_URL}?module=account&action=txlist&address=${lowerAddr}&apikey=${this.ETHERSCAN_API_KEY}`;
   console.log('url', url);
@@ -145,8 +145,8 @@ export class DepositScanService {
   for (const tx of txs) {
     txIndex++;
 
-    if (!tx.to || tx.to !== lowerAddr) continue;
-    if (tx.to === tx.from) continue;
+    if (!tx.to || tx.to.toLowerCase() !== lowerAddr.toLocaleLowerCase()) continue;
+    if (tx.to.toLowerCase() === tx.from.toLowerCase()) continue;
 
     if (lastHash && tx.hash === lastHash) {
       foundLastHash = true;
@@ -171,6 +171,8 @@ export class DepositScanService {
       txIndex,
       txDate: tx.timeStamp,
       transactionIndex:tx.transactionIndex,
+      addressId,
+      addressIndex,
     };
 
     const result = await this.confirmService.confirmDeposit(payload);
@@ -185,7 +187,7 @@ export class DepositScanService {
   };
   }
 
-  async scanBtcAddress(address: string) {
+  async scanBtcAddress(address: string,addressId: string,addressIndex: string) {
   const lowerAddr = address;
   const url = `https://api.blockcypher.com/v1/btc/main/addrs/${lowerAddr}/full`;
   console.log('url', url);
@@ -249,6 +251,8 @@ export class DepositScanService {
         txIndex,
         txDate: tx.received,
         transactionIndex: tx.transactionIndex,
+        addressId,
+        addressIndex,
       };
 
       const result = await this.confirmService.confirmDeposit(payload);
@@ -272,7 +276,7 @@ export class DepositScanService {
 }
 
 
-  async scanUsdtErc20Address(address: string) {
+  async scanUsdtErc20Address(address: string,addressId: string,addressIndex: string) {
   const lowerAddr = address.toLowerCase();
   const url = `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0xdAC17F958D2ee523a2206206994597C13D831ec7&address=${lowerAddr}&apikey=${this.ETHERSCAN_API_KEY}`;
 
@@ -328,6 +332,8 @@ export class DepositScanService {
       txIndex,
       txDate: tx.timeStamp,
       transactionIndex: tx.transactionIndex,
+      addressId,
+      addressIndex,
     };
 
     const result = await this.confirmService.confirmDeposit(payload);

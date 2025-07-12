@@ -1,4 +1,13 @@
 export const Responses = {
+
+  LOGIN_SUCESS:{
+    responsecode: '00',
+    responsemessage:"Login Successful",
+  },
+  LOGIN_FAILED:{
+    responsecode: '01',
+    responsemessage:"Invalid emailaddress or password",
+  },
   OTP_SENT: {
     responsecode: '66',
     responsemessage: 'An activation code has been sent to your registered email. Please check inbox, junk or spam!',
@@ -35,6 +44,10 @@ export const Responses = {
   USER_NOT_FOUND: {
     responsecode: '69',
     responsemessage: 'An error has occured. User not found.',
+  },
+  DDECRYPT_USER_NOT_FOUND: {
+    responsecode: '69',
+    responsemessage: 'An error has occured. Your authorization is either expired or invalid.',
   },
   USER_ALREADY_EXISTS: {
     responsecode: '23',
@@ -79,6 +92,11 @@ export const Responses = {
     responsemessage: 'Your deposit address has been created. please deposit now.',
   },
 
+  DEPOSIT_AUTH_CREATED: {
+    responsecode: '00',
+    responsemessage: 'Your auth request is successful. please complete transaction now.',
+  },
+
   OTP_INVALID: {
     responsecode: '72',
     responsemessage: 'Invalid or expired OTP.',
@@ -101,7 +119,7 @@ export const Responses = {
   },
   GET_TRANS_ERROR: {
     responsecode: '99',
-    responsemessage: 'You must provide transactionReference, custTransactionReference, or depositAddress.',
+    responsemessage: 'You must provide transactionReference, custTransactionReference, encCustTransactionReference, or depositAddress.',
   },
   TRANSACTION_NOT_FOUND: {
     responsecode: '12',
@@ -110,5 +128,21 @@ export const Responses = {
   TRANSACTION_FOUND: {
     responsecode: '00',
     responsemessage: 'Transaction(s) fetched successfully.',
+  },
+   TRANSACTION_CREATE_ERROR: {
+    responsecode: '34',
+    responsemessage: 'Unable to create transaction. Kindly ensure your custTransactionReference, encCustTransactionReference are unique',
+  },
+  DUPLICATE_ADDRESS: {
+    responsecode: '36',
+    responsemessage: 'Address already exists in another transaction',
+  },
+  COIN_OR_TOKEN_UNRECOGNIZED: {
+    responsecode: '55',
+    responsemessage: 'Coin or token is unrecognized. Please try again.',
+  },
+  HOOK_RECEIVED_SUCCESS: {
+    responsecode: '00',
+    responsemessage: 'Transaction processed successfully.',
   },
 };

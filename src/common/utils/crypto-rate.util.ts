@@ -63,27 +63,106 @@ export class CryptoRateUtil {
     }
   }
 
-  // async getEthUsdRate(): Promise<number | null> {
-  //   const url = ' https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd';
-  //   const res = await this.http.get<{ ethereum: any }>(url);
-  //   return res?.ethereum?.usd ?? null;
-  // }
-
-  // async getEthUsdRate(): Promise<number | null> {
-  //   const url = 'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD';
-  //   const res = await this.http.get<{ USD: number }>(url);
-  //   return res?.USD ?? null;
-  // }
-
   async getLtcUsdRate(): Promise<number | null> {
-    const url = 'https://min-api.cryptocompare.com/data/price?fsym=LTC&tsyms=USD';
-    const res = await this.http.get<{ USD: number }>(url);
-    return res?.USD ?? null;
+    const cached = await this.cacheManager.get<number>('ltc_usd_price');
+    if (cached) return cached;
+
+    try {
+      const res = await axios.get(
+        'https://min-api.cryptocompare.com/data/price?fsym=LTC&tsyms=USD',
+      );
+      const price = parseFloat(res.data.USD);
+      if (!isNaN(price)) {
+        await this.cacheManager.set('ltc_usd_price', price, 900); // 5 min TTL
+        return price;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching LTC price:', error.message);
+      return null;
+    }
+  }
+
+  async getSolUsdRate(): Promise<number | null> {
+    const cached = await this.cacheManager.get<number>('sol_usd_price');
+    if (cached) return cached;
+
+    try {
+      const res = await axios.get(
+        'https://min-api.cryptocompare.com/data/price?fsym=SOL&tsyms=USD',
+      );
+      const price = parseFloat(res.data.USD);
+      if (!isNaN(price)) {
+        await this.cacheManager.set('sol_usd_price', price, 900); // 5 min TTL
+        return price;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching SOL price:', error.message);
+      return null;
+    }
+  }
+
+  async getBchUsdRate(): Promise<number | null> {
+    const cached = await this.cacheManager.get<number>('bch_usd_price');
+    if (cached) return cached;
+
+    try {
+      const res = await axios.get(
+        'https://min-api.cryptocompare.com/data/price?fsym=BCH&tsyms=USD',
+      );
+      const price = parseFloat(res.data.USD);
+      if (!isNaN(price)) {
+        await this.cacheManager.set('bch_usd_price', price, 900); // 5 min TTL
+        return price;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching BCH price:', error.message);
+      return null;
+    }
   }
 
   async getUsdtUsdRate(): Promise<number | null> {
-    const url = 'https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=USD';
-    const res = await this.http.get<{ USD: number }>(url);
-    return res?.USD ?? null;
+    const cached = await this.cacheManager.get<number>('usdt_usd_price');
+    if (cached) return cached;
+
+    try {
+      const res = await axios.get(
+        'https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=USD',
+      );
+      const price = parseFloat(res.data.USD);
+      if (!isNaN(price)) {
+        await this.cacheManager.set('usdt_usd_price', price, 900); // 5 min TTL
+        return price;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching USDT price:', error.message);
+      return null;
+    }
   }
+
+  async getXrpUsdRate(): Promise<number | null> {
+    const cached = await this.cacheManager.get<number>('xrp_usd_price');
+    if (cached) return cached;
+
+    try {
+      const res = await axios.get(
+        'https://min-api.cryptocompare.com/data/price?fsym=XRP&tsyms=USD',
+      );
+      const price = parseFloat(res.data.USD);
+      if (!isNaN(price)) {
+        await this.cacheManager.set('xrp_usd_price', price, 900); // 5 min TTL
+        return price;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching XRP price:', error.message);
+      return null;
+    }
+  }
+
+
+  
 }
