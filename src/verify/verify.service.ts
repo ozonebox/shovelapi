@@ -159,6 +159,7 @@ private readonly walletService: WalletsService,private readonly secretsService: 
     let userObj=user.toObject()
     let transObj={
       ...userObj,
+      userId:user._id,
       transactionReference:transactionReference,
       custTransactionReference:transactionReference,
     }
@@ -190,7 +191,7 @@ private readonly walletService: WalletsService,private readonly secretsService: 
       user.depositAddress = user.depositAddress || [];
       user.depositAddress.push(addrs);  
       await user.save();
-       this.addressesService. createEvenEventTransaction(ethAddressInfo.address??'','ethereum','ethereum','confirmed')
+      
     }
     if(usdterc20AddressInfo.status==true){
        let addrs={
@@ -209,7 +210,7 @@ private readonly walletService: WalletsService,private readonly secretsService: 
       user.depositAddress = user.depositAddress || [];
       user.depositAddress.push(addrs);  
        await user.save();
-        this.addressesService. createEvenEventTransaction(usdterc20AddressInfo.address??'','ethereum','tetherusdt','confirmed')
+       
     }
     if(usdttrc20AddressInfo.status==true){
        let addrs={
@@ -228,7 +229,7 @@ private readonly walletService: WalletsService,private readonly secretsService: 
       user.depositAddress = user.depositAddress || [];
       user.depositAddress.push(addrs);  
        await user.save();
-        this.addressesService. createEvenEventTransaction(usdttrc20AddressInfo.address??'','tron','tetherusdt','confirmed')
+       
     }
     if(ltcAddressInfo.status==true){
        let addrs={
@@ -247,8 +248,7 @@ private readonly walletService: WalletsService,private readonly secretsService: 
       user.depositAddress = user.depositAddress || [];
       user.depositAddress.push(addrs);  
        await user.save();
-        this.addressesService. createEvenEventTransaction(ltcAddressInfo.address??'','litecoin','litecoin','unconfirmed')
-        this.addressesService. createEvenEventTransaction(ltcAddressInfo.address??'','litecoin','litecoin','confirmed')
+       
     }
     if(btcAddressInfo.status==true){
        let addrs={
@@ -267,8 +267,7 @@ private readonly walletService: WalletsService,private readonly secretsService: 
       user.depositAddress = user.depositAddress || [];
       user.depositAddress.push(addrs);  
        await user.save();
-         this.addressesService. createEvenEventTransaction(ltcAddressInfo.address??'','bitcoin','bitcoin','unconfirmed')
-        this.addressesService. createEvenEventTransaction(ltcAddressInfo.address??'','bitcoin','bitcoin','confirmed')
+       
     }
     if(solAddressInfo.status==true){
        let addrs={
@@ -287,7 +286,7 @@ private readonly walletService: WalletsService,private readonly secretsService: 
       user.depositAddress = user.depositAddress || [];
       user.depositAddress.push(addrs);  
        await user.save();
-        this.addressesService. createEvenEventTransaction(bchAddressInfo.address??'','solana','solana','confirmed')
+      
     }
     if(bchAddressInfo.status==true){
        let addrs={
@@ -303,11 +302,11 @@ private readonly walletService: WalletsService,private readonly secretsService: 
         createdAt:new Date(),
         depositAddressQr:'http://localhost:3010/transactions/generate?data='+bchAddressInfo.address,
       }
+      addrs.address=addrs.address.replace("bitcoincash:","")
       user.depositAddress = user.depositAddress || [];
       user.depositAddress.push(addrs);  
        await user.save();
-       await this.addressesService. createEvenEventTransaction(bchAddressInfo.address??'','bitcoin-cash','bitcoin-cash','unconfirmed')
-       await this.addressesService. createEvenEventTransaction(bchAddressInfo.address??'','bitcoin-cash','bitcoin-cash','confirmed')
+      
     }
 
      if(xrpAddressInfo.status==true){
@@ -327,7 +326,7 @@ private readonly walletService: WalletsService,private readonly secretsService: 
       user.depositAddress = user.depositAddress || [];
       user.depositAddress.push(addrs);  
        await user.save();
-        this.addressesService. createEvenEventTransaction(xrpAddressInfo.address??'','xrp','xrp','confirmed')
+       
     }
 
    

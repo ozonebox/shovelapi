@@ -16,18 +16,22 @@ import { AddressUSDTTRC20, AddressUSDTTRC20Schema } from './entities/address.usd
 import { WalletsUSDTTRC20Service } from './wallets.usdttrc20.service';
 import { WalletsBchService } from './wallets.bch.service';
 import { AddressBch, AddressBchSchema } from './entities/address.bch.entity';
+import { AddressXrp, AddressXrpSchema } from './entities/address.xrp.entity';
+import { WalletsXrpService } from './wallets.xrp.service';
+import { HttpRequestUtil } from 'src/common/utils/http-request.util';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema, },{ name: Address.name, schema: AddressSchema, },
       { name: AddressBtc.name, schema: AddressBtcSchema, }, { name: AddressUSDTERC20.name, schema: AddressUSDTERC20Schema, },
       { name: AddressUSDTTRC20.name, schema: AddressUSDTTRC20Schema, },{ name: AddressBch.name, schema: AddressBchSchema, },
-      { name: AddressLtc.name, schema: AddressLtcSchema, }, { name: AddressSol.name, schema: AddressSolSchema, }
+      { name: AddressLtc.name, schema: AddressLtcSchema, }, { name: AddressSol.name, schema: AddressSolSchema, },
+      { name: AddressXrp.name, schema: AddressXrpSchema, }
     ]),
     
   ],
-  providers: [WalletsService,WalletsBtcService,WalletsLtcService,WalletsSolanaService,WalletsUSDTTRC20Service,WalletsBchService, AddressesService],
+  providers: [WalletsService,WalletsBtcService,WalletsLtcService,WalletsSolanaService,WalletsUSDTTRC20Service,WalletsBchService,WalletsXrpService,HttpRequestUtil, AddressesService],
   controllers: [WalletsController],
-  exports: [WalletsService,WalletsBtcService,WalletsLtcService,WalletsSolanaService,WalletsUSDTTRC20Service,WalletsBchService,AddressesService],
+  exports: [WalletsService,WalletsBtcService,WalletsLtcService,WalletsSolanaService,WalletsUSDTTRC20Service,WalletsBchService,WalletsXrpService,AddressesService],
 })
 export class WalletsModule {}

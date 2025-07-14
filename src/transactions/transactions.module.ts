@@ -15,11 +15,12 @@ import { AuthModule } from 'src/auth/auth.module';
 import { TransactionAuth, TransactionAuthSchema } from './entities/transactionauth.entities';
 import { CryptoRateUtil } from 'src/common/utils/crypto-rate.util';
 import { HttpRequestUtil } from 'src/common/utils/http-request.util';
+import { IncomingHooks, IncomingHooksSchema } from 'src/deposits/entities/incominghooks.entity';
 
 @Module({
   imports: [
       MongooseModule.forFeature([{ name: User.name, schema: UserSchema },{ name: Deposit.name, schema: DepositSchema},{ name: Transaction.name, schema: TransactionSchema},
-        { name: TransactionAuth.name, schema: TransactionAuthSchema}]),
+        { name: TransactionAuth.name, schema: TransactionAuthSchema},{ name: IncomingHooks.name, schema: IncomingHooksSchema}]),
       DepositsModule,SecretsModule,SQSModule,AuthModule,
     ],
   controllers: [TransactionsController],

@@ -25,6 +25,7 @@ import { AddressSol, AddressSolSchema } from 'src/wallets/entities/address.sol.e
 import { AddressUSDTTRC20, AddressUSDTTRC20Schema } from 'src/wallets/entities/address.usdttrc20.entity';
 import { AddressBch, AddressBchSchema } from 'src/wallets/entities/address.bch.entity';
 import { TransactionsGateway } from 'src/transactions/transactions.gateway';
+import { AddressXrp, AddressXrpSchema } from 'src/wallets/entities/address.xrp.entity';
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { TransactionsGateway } from 'src/transactions/transactions.gateway';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema },{ name: Deposit.name, schema: DepositSchema },
       { name: Transaction.name, schema: TransactionSchema},{ name: Address.name, schema: AddressSchema},{ name: AddressUSDTERC20.name, schema: AddressUSDTERC20},
       { name: AddressLtc.name, schema: AddressLtcSchema},{ name: AddressSol.name, schema: AddressSolSchema},{ name: AddressUSDTTRC20.name, schema: AddressUSDTTRC20Schema},
-      { name: AddressBtc.name, schema: AddressBtcSchema},{ name: Queue.name, schema: QueueSchema},{ name: AddressBch.name, schema: AddressBchSchema, },]),
+      { name: AddressBtc.name, schema: AddressBtcSchema},{ name: Queue.name, schema: QueueSchema},{ name: AddressBch.name, schema: AddressBchSchema, },{ name: AddressXrp.name, schema: AddressXrpSchema, }]),
     WalletsModule,SecretsModule,SQSModule
   ],
   controllers: [DepositsController],

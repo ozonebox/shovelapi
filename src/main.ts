@@ -1,12 +1,14 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe,BadRequestException } from '@nestjs/common';
 import { Responses } from './common/constants/responses';
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const allowedOrigins = [
-    'http://localhost:3002',
+    'http://localhost:3000',
   ];
   app.useGlobalPipes(new ValidationPipe({
     transform: true,

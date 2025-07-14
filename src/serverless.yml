@@ -1,0 +1,68 @@
+service: shovel-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  profile: mishaelstone  # Your custom AWS CLI profile
+  memorySize: 512
+  timeout: 30
+  stage: dev
+  environment:
+    NODE_ENV: production
+    MONGO_URI: ${env:MONGO_URI}
+    JWT_SECRET: ${env:JWT_SECRET}
+    JWT_EXPIRES_IN: ${env:JWT_EXPIRES_IN}
+    
+    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    AWS_REGION: ${env:AWS_REGION}
+
+    EMAIL_HOST: ${env:EMAIL_HOST}
+    EMAIL_PORT: ${env:EMAIL_PORT}
+    EMAIL_USER: ${env:EMAIL_USER}
+    EMAIL_PASS: ${env:EMAIL_PASS}
+    EMAIL_FROM: ${env:EMAIL_FROM}
+    EMAIL_FROM_NAME: ${env:EMAIL_FROM_NAME}
+
+    SITE_URL: ${env:SITE_URL}
+    AHA_URL: ${env:AHA_URL}
+    AHA_API_KEY: ${env:AHA_API_KEY}
+    EMAIL_TEMP: ${env:EMAIL_TEMP}
+    DOMAINNAME: ${env:DOMAINNAME}
+
+    ETHERSCAN_API_KEY: ${env:ETHERSCAN_API_KEY}
+    ETHERSCAN_BASE_URL: ${env:ETHERSCAN_BASE_URL}
+    CRYPTOAPI_BASE_URL: ${env:CRYPTOAPI_BASE_URL}
+    CRYPTOAPI_API_KEY: ${env:CRYPTOAPI_API_KEY}
+
+    DEPOSIT_SCAN_QUEUE_URL: ${env:DEPOSIT_SCAN_QUEUE_URL}
+    MAIN_DEPOSIT_SCAN_QUEUE_URL: ${env:MAIN_DEPOSIT_SCAN_QUEUE_URL}
+
+    USDT_CONTRACT_ADDRESS: ${env:USDT_CONTRACT_ADDRESS}
+    TRON_USDT_CONTRACT_ADDRESS: ${env:TRON_USDT_CONTRACT_ADDRESS}
+
+    TERMS: ${env:TERMS}
+    PRIVACY: ${env:PRIVACY}
+    PAYMENT_SECRET_KEY: ${env:PAYMENT_SECRET_KEY}
+    SAVED_ADDRESS: ${env:SAVED_ADDRESS}
+
+  
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+package:
+  excludeDevDependencies: true
+
+functions:
+  api:
+    handler: src/main-lambda.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: any
+          cors: true

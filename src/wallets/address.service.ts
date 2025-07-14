@@ -17,6 +17,7 @@ import { WalletsBchService } from './wallets.bch.service';
 import { HttpRequestUtil } from 'src/common/utils/http-request.util';
 import { AddressXrp, AddressXrpDocument } from './entities/address.xrp.entity';
 import { WalletsXrpService } from './wallets.xrp.service';
+import { WalletsUSDTTRC20Service } from './wallets.usdttrc20.service';
 
 @Injectable()
 export class AddressesService {
@@ -33,6 +34,7 @@ export class AddressesService {
     @InjectModel(AddressBch.name) private addressBchModel: Model<AddressBchDocument>,
     @InjectModel(AddressXrp.name) private addressXrpModel: Model<AddressXrpDocument>,
     private readonly walletsService: WalletsService,
+    private readonly walletsUSDTTRC20Service: WalletsUSDTTRC20Service,
     private readonly walletsBtcService: WalletsBtcService,
     private readonly walletsLtcService: WalletsLtcService,
     private readonly walletsSolanaService: WalletsSolanaService,
@@ -69,7 +71,7 @@ export class AddressesService {
       isUsed: false,
       type:type,
     });
-
+    await this.createEvenEventTransaction(newAddress.address??'','ethereum','ethereum','confirmed')
     return {
       address: newAddress.address,
       network: newAddress.network,
@@ -114,7 +116,7 @@ export class AddressesService {
       isUsed: false,
       type:type,
     });
-
+    await this.createEvenEventTransaction(newAddress.address??'','ethereum','tetherusdt','confirmed')
     return {
       address: newAddress.address,
       network: newAddress.network,
@@ -141,7 +143,7 @@ export class AddressesService {
     const index = count; // Start at 0, 1, 2, etc.
 
     // Generate wallet address using WalletsService
-    const wallet = this.walletsService.generateAddress(mnemonic,index);
+    const wallet = this.walletsUSDTTRC20Service.generateTronWalletFromMnemonic(mnemonic,index);
 
     // Store the generated address
     try{
@@ -159,7 +161,7 @@ export class AddressesService {
       isUsed: false,
       type:type,
     });
-
+    await this.createEvenEventTransaction(newAddress.address??'','tron','tetherusdt','confirmed')
     return {
       address: newAddress.address,
       network: newAddress.network,
@@ -201,7 +203,8 @@ export class AddressesService {
       isUsed: false,
       type:type,
     });
-
+     await this.createEvenEventTransaction(newAddress.address??'','bitcoin','bitcoin','unconfirmed')
+       await this.createEvenEventTransaction(newAddress.address??'','bitcoin','bitcoin','confirmed')
     return {
       address: newAddress.address,
       network: newAddress.network,
@@ -243,7 +246,8 @@ export class AddressesService {
       isUsed: false,
       type:type,
     });
-
+    await this.createEvenEventTransaction(newAddress.address??'','litecoin','litecoin','unconfirmed')
+       await this.createEvenEventTransaction(newAddress.address??'','litecoin','litecoin','confirmed')
     return {
       address: newAddress.address,
       network: newAddress.network,
@@ -285,7 +289,7 @@ export class AddressesService {
       isUsed: false,
       type:type,
     });
-
+     await this.createEvenEventTransaction(newAddress.address??'','solana','solana','confirmed')
     return {
       address: newAddress.address,
       network: newAddress.network,
@@ -327,7 +331,9 @@ export class AddressesService {
       isUsed: false,
       type:type,
     });
-
+    let addr=newAddress.address.replace("bitcoincash:","")
+     await this.createEvenEventTransaction(addr??'','bitcoin-cash','bitcoin-cash','unconfirmed')
+      await this.createEvenEventTransaction(addr??'','bitcoin-cash','bitcoin-cash','confirmed')
     return {
       address: newAddress.address,
       network: newAddress.network,
@@ -369,7 +375,7 @@ export class AddressesService {
       isUsed: false,
       type: type,
     });
-
+    await this.createEvenEventTransaction(newAddress.address??'','xrp','xrp','confirmed')
     return {
       address: newAddress.address,
       network: newAddress.network,
@@ -387,45 +393,75 @@ export class AddressesService {
   }
 
   async createEvenEventTransaction(address:string,blockchain:string,coin:string,confirmation:string){
-    const network='mainnet';
-    let url=''
-    
-    if(blockchain=='bitcoin'||blockchain=='bitcoin-cash'||blockchain=='litecoin'||blockchain=='xrp'){
-       url= `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-coins-transactions-confirmed-each-confirmation`;
-       if(confirmation=="unconfirmed"){
-         url = `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-coins-transactions-unconfirmed`;
-      }
-    
-    }
-    if(blockchain=='ethereum'||blockchain=="tron"){
-       url= `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-tokens-transactions-confirmed-each-confirmation`;
-       if(coin=="ethereum"){
-         url = `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-coins-transactions-unconfirmed`;
-      }
-    
-      
-    }
-     if(blockchain=='solana'){
-       url= `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-coins-transactions-confirmed`;
-      
-    
-    }
-   
-   
-
-    let body={
+    const bodynoconfirm={
         context: "ex",
         data: {
             item: {
                 address: address,
                 allowDuplicates: false,
                 callbackSecretKey: this.CRYPTOAPI_API_KEY,
-                callbackUrl: "https://shovel.cash/index.php",
+                callbackUrl: "https://shovel.cash/transactions/receivemessage",
+            }
+        }
+      } 
+       const bodyconfirm={
+        context: "ex",
+        data: {
+            item: {
+                address: address,
+                allowDuplicates: false,
+                callbackSecretKey: this.CRYPTOAPI_API_KEY,
+                callbackUrl: "https://shovel.cash/transactions/receivemessage",
                 confirmationsCount: 3
             }
         }
       } 
-    console.log('CryptoApi URL:', url);
+    const network='mainnet';
+    let url=''
+    let body;
+    if(blockchain=='bitcoin'||blockchain=='bitcoin-cash'||blockchain=='litecoin'||blockchain=='xrp'){
+       url= `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-coins-transactions-confirmed-each-confirmation`;
+       body=bodyconfirm;
+       if(confirmation=="unconfirmed"){
+         url = `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-coins-transactions-unconfirmed`;
+         body=bodynoconfirm;
+         body={
+        context: "ex",
+        data: {
+            item: {
+                address: address,
+                allowDuplicates: false,
+                callbackSecretKey: this.CRYPTOAPI_API_KEY,
+                callbackUrl: "https://shovel.cash/transactions/receivemessage",
+            }
+        }
+      } 
+      }
+    
+    }
+    if(blockchain=='ethereum'||blockchain=="tron"){
+      
+       url= `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-tokens-transactions-confirmed-each-confirmation`;
+        body=bodyconfirm;
+       if(coin=="ethereum"){
+         url = `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-coins-transactions-unconfirmed`;
+         body=bodynoconfirm;
+      }
+    
+      
+    }
+    
+     if(blockchain=='solana'){
+      
+       url= `${this.CRYPTOAPI_BASE_URL}/blockchain-events/${blockchain}/${network}/address-coins-transactions-confirmed`;
+       body=bodynoconfirm;
+      
+    }
+   
+   
+
+     
+    console.log('CryptoApi URL: '+address, url);
     console.log('body:', body);
 
     let res;

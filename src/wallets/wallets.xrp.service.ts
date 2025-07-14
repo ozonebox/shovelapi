@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import * as bip39 from 'bip39';
 import * as edHd from 'ed25519-hd-key';
+import * as nacl from 'tweetnacl';
 import * as rippleKeypairs from 'ripple-keypairs';
-import * as bs58check from 'bs58check';
 
 @Injectable()
 export class WalletsXrpService {
@@ -11,18 +11,27 @@ export class WalletsXrpService {
   }
 
   generateXrpWallet(mnemonic: string, index = 0) {
-    const seed = bip39.mnemonicToSeedSync(mnemonic);
-    const path = `m/44'/144'/0'/0/${index}`;
-    const { key } = edHd.derivePath(path, seed.toString('hex'));
+    const seed = bip39.mnemonicToSeedSync(mnemonic); // Buffer
 
-    const keypair = rippleKeypairs.deriveKeypair(key.toString('hex'));
-    const address = rippleKeypairs.deriveAddress(keypair.publicKey);
+    // XRP BIP44 derivation path — all segments hardened
+    const path = `m/44'/144'/0'/0'/${index}'`;
+    const { key } = edHd.derivePath(path, seed.toString('hex')); // key is 32-byte Buffer
+
+    // 🔐 Derive keypair using tweetnacl
+    const keypair = nacl.sign.keyPair.fromSeed(key); // returns { publicKey, secretKey }
+
+    const publicKeyHex = Buffer.from(keypair.publicKey).toString('hex');
+    const privateKeyHex = Buffer.from(keypair.secretKey.slice(0, 32)).toString('hex'); // use seed part only
+
+    // ✅ Now derive address from public key using ripple-keypairs
+    const address = rippleKeypairs.deriveAddress(publicKeyHex);
 
     return {
+      mnemonic,
       path,
       address,
-      publicKey: keypair.publicKey,
-      privateKey: keypair.privateKey,
+      publicKey: publicKeyHex,
+      privateKey: privateKeyHex
     };
   }
 }

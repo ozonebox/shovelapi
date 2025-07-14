@@ -53,19 +53,24 @@ export class HttpRequestUtil {
     }
   }
 
-   async postCryptoApi<T = any>(url: string, data: any,): Promise<T | null> {
-    try {
-      const response = await axios.post<T>(url, data, {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'NestJS-App',
-          'X-API-Key': this.CRYPTOAPI_API_KEY,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      this.logger.error(`POST ${url} failed: ${error.message}`);
-      return null;
+   async postCryptoApi<T = any>(url: string, data: any): Promise<T | null> {
+      try {
+        const response = await axios.post<T>(url, data, {
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'NestJS-App',
+            'X-API-Key': this.CRYPTOAPI_API_KEY,
+          },
+        });
+
+        return response.data;
+      } catch (error) {
+        this.logger.error(`POST ${url} failed: ${error.message}`);
+        return null;
+      } finally {
+        //  Delay next action by 2 seconds
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
     }
-  }
+
 }

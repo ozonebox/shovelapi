@@ -41,6 +41,13 @@ export class TransactionsController {
        return res.status(200).json(response);
     }
 
+    @Post('receivemessage')
+    async receivemessage(@Body() dto: any,@Res() res: Response) {
+      const response = await this.transactionsService.receiveMessage(dto);
+     
+       return res.status(200).json(response);
+    }
+
       @Get('generate')
       async generateQrCode(@Query('data') data: string, @Res() res: Response) {
         if (!data) {
